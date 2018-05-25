@@ -207,7 +207,7 @@ typedef unsigned long long uint64;
 
 #if defined(HL_WIN) && !defined(HL_LLVM)
 #ifdef HL_WIN_DESKTOP
-#	include <Windows.h>
+// #	include <Windows.h>
 #else
 #	include <xdk.h>
 #endif
@@ -750,10 +750,8 @@ typedef struct {
 #	define HL_NAME(p)					p
 #	ifdef LIBHL_EXPORTS
 #		define HL_PRIM				EXPORT
-// #		undef DEFINE_PRIM
-#		undef DEFINE_HL_PRIM
-// #		define DEFINE_PRIM(t,name,args)						_DEFINE_PRIM_WITH_NAME(t,hl_##name,args,name)
-#		define DEFINE_HL_PRIM(t,name,args)						_DEFINE_PRIM_WITH_NAME(t,hl_##name,args,name)
+#		undef DEFINE_PRIM
+#		define DEFINE_PRIM(t,name,args)						_DEFINE_PRIM_WITH_NAME(t,hl_##name,args,name)
 #		define DEFINE_PRIM_WITH_NAME						_DEFINE_PRIM_WITH_NAME
 #	else
 #		define HL_PRIM
