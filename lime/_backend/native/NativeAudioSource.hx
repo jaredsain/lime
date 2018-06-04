@@ -382,8 +382,6 @@ class NativeAudioSource {
 			
 			playing = false;
 			loops--;
-			setCurrentTime (0);
-			play ();
 			return;
 			
 		} else {
@@ -583,27 +581,27 @@ class NativeAudioSource {
 	
 	
 	public function setLoops (value:Int):Int {
-		
-		if(handle!=null) {
 
-			if(value==-1) {
+		if(handle != null) {
 
-				if (timer != null) {
+			if(value == 0) {
 
-					timer.stop ();
-
-				}
-
-				AL.sourcei (handle, AL.LOOPING, 1);
-
-			} else {
-				
 				if(AL.getSourcei(handle,AL.LOOPING) != 0) {
 
 					AL.sourcei (handle, AL.LOOPING, 0);
 					setCurrentTime (getCurrentTime ());
 
 				}
+			
+			} else {
+
+				if (value == -1 && timer != null) {
+
+					timer.stop ();
+
+				}
+
+				AL.sourcei (handle, AL.LOOPING, 1);
 
 			}
 		}
