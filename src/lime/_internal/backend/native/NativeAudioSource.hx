@@ -482,19 +482,22 @@ class NativeAudioSource {
 				timer.stop ();
 
 			}
+			
+			if(getLoops() >= 0) {
 
-			var timeRemaining = getLength () - value;
-
-			if (timeRemaining > 0) {
-
-				completed = false;
-				timer = new Timer (timeRemaining);
-				timer.run = timer_onRun;
-
-			} else {
-
-				playing = false;
-				completed = true;
+				var timeRemaining = getLength () - value;
+				
+				if (timeRemaining > 0) {
+					
+					completed = false;
+					timer = new Timer (timeRemaining);
+					timer.run = timer_onRun;
+					
+				} else {
+					
+					completed = true;
+					
+				}
 
 			}
 
@@ -580,9 +583,31 @@ class NativeAudioSource {
 
 
 	public function setLoops (value:Int):Int {
+		
+		if(handle!=null) {
 
+			if(value==-1) {
+
+				if (timer != null) {
+
+					timer.stop ();
+
+				}
+
+				AL.sourcei (handle, AL.LOOPING, 1);
+
+			} else {
+				
+				if(AL.getSourcei(handle,AL.LOOPING) != 0) {
+
+					AL.sourcei (handle, AL.LOOPING, 0);
+					setCurrentTime (getCurrentTime ());
+
+				}
+
+			}
+		}
 		return loops = value;
-
 	}
 
 
