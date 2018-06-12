@@ -2,7 +2,8 @@
 #define LIME_GRAPHICS_RENDER_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 
 
 namespace lime {
@@ -17,12 +18,20 @@ namespace lime {
 	};
 	
 	
+	struct HL_RenderEvent {
+		
+		hl_type* t;
+		RenderEventType type;
+		
+	};
+	
+	
 	class RenderEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			RenderEvent ();
 			

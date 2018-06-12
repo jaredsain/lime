@@ -191,7 +191,8 @@ namespace lime {
 	}
 	
 	
-	value SDLRenderer::Lock () {
+	
+	void* SDLRenderer::Lock (bool useCFFIValue) {
 		
 		if (sdlRenderer) {
 			
@@ -212,25 +213,57 @@ namespace lime {
 				
 			}
 			
-			value result = alloc_empty_object ();
-			
 			void *pixels;
 			int pitch;
 			
-			if (SDL_LockTexture (sdlTexture, NULL, &pixels, &pitch) == 0) {
+			if (useCFFIValue) {
 				
-				alloc_field (result, val_id ("width"), alloc_int (width));
-				alloc_field (result, val_id ("height"), alloc_int (height));
-				alloc_field (result, val_id ("pixels"), alloc_float ((uintptr_t)pixels));
-				alloc_field (result, val_id ("pitch"), alloc_int (pitch));
+				value result = alloc_empty_object ();
+				
+				if (SDL_LockTexture (sdlTexture, NULL, &pixels, &pitch) == 0) {
+					
+					alloc_field (result, val_id ("width"), alloc_int (width));
+					alloc_field (result, val_id ("height"), alloc_int (height));
+					alloc_field (result, val_id ("pixels"), alloc_float ((uintptr_t)pixels));
+					alloc_field (result, val_id ("pitch"), alloc_int (pitch));
+					
+				}
+				
+				return result;
+				
+			} else {
+				
+				const int id_width = hl_hash_utf8 ("width");
+				const int id_height = hl_hash_utf8 ("height");
+				const int id_pixels = hl_hash_utf8 ("pixels");
+				const int id_pitch = hl_hash_utf8 ("pitch");
+				
+				vdynamic* result = (vdynamic*)hl_alloc_dynobj ();
+				
+				if (SDL_LockTexture (sdlTexture, NULL, &pixels, &pitch) == 0) {
+					
+					hl_dyn_seti (result, id_width, &hlt_i32, width);
+					hl_dyn_seti (result, id_height, &hlt_i32, height);
+					hl_dyn_setd (result, id_pixels, (uintptr_t)pixels);
+					hl_dyn_seti (result, id_pitch, &hlt_i32, pitch);
+					
+				}
+				
+				return result;
 				
 			}
 			
-			return result;
-			
 		} else {
 			
-			return alloc_null ();
+			if (useCFFIValue) {
+				
+				return alloc_null ();
+				
+			} else {
+				
+				return 0;
+				
+			}
 			
 		}
 		

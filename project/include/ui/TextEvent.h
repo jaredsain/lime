@@ -2,7 +2,8 @@
 #define LIME_UI_TEXT_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 #include <stdint.h>
 
 
@@ -17,12 +18,25 @@ namespace lime {
 	};
 	
 	
+	struct HL_TextEvent {
+		
+		hl_type* t;
+		int id;
+		int length;
+		int start;
+		vbyte* text;
+		TextEventType type;
+		int windowID;
+		
+	};
+	
+	
 	class TextEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			TextEvent ();
 			

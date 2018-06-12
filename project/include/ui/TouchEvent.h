@@ -2,7 +2,8 @@
 #define LIME_UI_TOUCH_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 #include <stdint.h>
 
 
@@ -18,12 +19,27 @@ namespace lime {
 	};
 	
 	
+	struct HL_TouchEvent {
+		
+		hl_type* t;
+		int device;
+		double dx;
+		double dy;
+		int id;
+		double pressure;
+		TouchEventType type;
+		double x;
+		double y;
+		
+	};
+	
+	
 	class TouchEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			TouchEvent ();
 			

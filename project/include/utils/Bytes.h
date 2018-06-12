@@ -2,11 +2,20 @@
 #define LIME_UTILS_BYTES_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
 #include <utils/QuickVec.h>
 
 
 namespace lime {
+	
+	
+	struct HL_Bytes {
+		
+		hl_type* t;
+		int length;
+		unsigned char* b;
+		
+	};
 	
 	
 	struct Bytes {
@@ -15,6 +24,7 @@ namespace lime {
 		Bytes ();
 		Bytes (int size);
 		Bytes (value bytes);
+		Bytes (HL_Bytes* bytes);
 		Bytes (const char* path);
 		Bytes (const QuickVec<unsigned char> data);
 		~Bytes ();
@@ -25,6 +35,7 @@ namespace lime {
 		void ReadFile (const char* path);
 		void Resize (int size);
 		void Set (value bytes);
+		void Set (HL_Bytes* bytes);
 		void Set (const QuickVec<unsigned char> data);
 		value Value ();
 		
