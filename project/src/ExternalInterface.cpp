@@ -434,7 +434,7 @@ namespace lime {
 			
 		}
 		
-		return bytes.Value ();
+		return (value)bytes.Value ();
 		
 	}
 	
@@ -466,7 +466,18 @@ namespace lime {
 		
 		Bytes data (bytes);
 		data.ReadFile (path.c_str ());
-		return data.Value ();
+		return (value)data.Value ();
+		
+	}
+	
+	
+	HL_PRIM HL_Bytes* hl_lime_bytes_read_file (HL_String* path, HL_Bytes* bytes) {
+		
+		if (!path) return 0;
+		Bytes data (bytes);
+		data.ReadFile (hl_to_utf8 ((const uchar*)path->bytes));
+		HL_Bytes* ret = (HL_Bytes*)data.Value ();
+		return ret;
 		
 	}
 	
@@ -582,7 +593,7 @@ namespace lime {
 		
 		Zlib::Compress (DEFLATE, &data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null();
 		#endif
@@ -615,7 +626,7 @@ namespace lime {
 		
 		Zlib::Decompress (DEFLATE, &data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null ();
 		#endif
@@ -1620,7 +1631,7 @@ namespace lime {
 		
 		Zlib::Compress (GZIP, &data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null ();
 		#endif
@@ -1652,7 +1663,7 @@ namespace lime {
 		
 		Zlib::Decompress (GZIP, &data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null ();
 		#endif
@@ -1706,7 +1717,7 @@ namespace lime {
 				#ifdef LIME_PNG
 				if (PNG::Encode (&imageBuffer, &data)) {
 					
-					return data.Value ();
+					return (value)data.Value ();
 					
 				}
 				#endif
@@ -1717,7 +1728,7 @@ namespace lime {
 				#ifdef LIME_JPEG
 				if (JPEG::Encode (&imageBuffer, &data, quality)) {
 					
-					return data.Value ();
+					return (value)data.Value ();
 					
 				}
 				#endif
@@ -1783,7 +1794,7 @@ namespace lime {
 		#ifdef LIME_PNG
 		if (PNG::Decode (&resource, &imageBuffer)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -1791,7 +1802,7 @@ namespace lime {
 		#ifdef LIME_JPEG
 		if (JPEG::Decode (&resource, &imageBuffer)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -1801,31 +1812,31 @@ namespace lime {
 	}
 	
 	
-	HL_PRIM vdynamic* hl_lime_image_load_bytes (HL_Bytes* data, HL_ImageBuffer* buffer) {
+	HL_PRIM HL_ImageBuffer* hl_lime_image_load_bytes (HL_Bytes* data, HL_ImageBuffer* buffer) {
 		
-		// Resource resource;
-		// Bytes bytes;
+		Resource resource;
+		Bytes bytes;
 		
-		// ImageBuffer imageBuffer = ImageBuffer (buffer);
+		ImageBuffer imageBuffer = ImageBuffer (buffer);
 		
-		// bytes.Set (data);
-		// resource = Resource (&bytes);
+		bytes.Set (data);
+		resource = Resource (&bytes);
 		
-		// #ifdef LIME_PNG
-		// if (PNG::Decode (&resource, &imageBuffer)) {
+		#ifdef LIME_PNG
+		if (PNG::Decode (&resource, &imageBuffer)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
-		// #ifdef LIME_JPEG
-		// if (JPEG::Decode (&resource, &imageBuffer)) {
+		#ifdef LIME_JPEG
+		if (JPEG::Decode (&resource, &imageBuffer)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
 		return 0;
 		
@@ -1844,7 +1855,7 @@ namespace lime {
 		#ifdef LIME_PNG
 		if (PNG::Decode (&resource, &imageBuffer)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -1852,7 +1863,7 @@ namespace lime {
 		#ifdef LIME_JPEG
 		if (JPEG::Decode (&resource, &imageBuffer)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -1862,30 +1873,30 @@ namespace lime {
 	}
 	
 	
-	HL_PRIM vdynamic* hl_lime_image_load_file (vbyte* data, HL_ImageBuffer* buffer) {
+	HL_PRIM HL_ImageBuffer* hl_lime_image_load_file (HL_String* data, HL_ImageBuffer* buffer) {
 		
-		// Resource resource;
-		// Bytes bytes;
+		Resource resource;
+		Bytes bytes;
 		
-		// ImageBuffer imageBuffer = ImageBuffer (buffer);
+		ImageBuffer imageBuffer = ImageBuffer (buffer);
 		
-		// resource = Resource (val_string (data));
+		resource = Resource (data);
 		
-		// #ifdef LIME_PNG
-		// if (PNG::Decode (&resource, &imageBuffer)) {
+		#ifdef LIME_PNG
+		if (PNG::Decode (&resource, &imageBuffer)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
-		// #ifdef LIME_JPEG
-		// if (JPEG::Decode (&resource, &imageBuffer)) {
+		#ifdef LIME_JPEG
+		if (JPEG::Decode (&resource, &imageBuffer)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
 		return 0;
 		
@@ -2332,7 +2343,7 @@ namespace lime {
 		#ifdef LIME_JPEG
 		if (JPEG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -2342,20 +2353,20 @@ namespace lime {
 	}
 	
 	
-	HL_PRIM vdynamic* hl_lime_jpeg_decode_bytes (HL_Bytes* data, bool decodeData, HL_ImageBuffer* buffer) {
+	HL_PRIM HL_ImageBuffer* hl_lime_jpeg_decode_bytes (HL_Bytes* data, bool decodeData, HL_ImageBuffer* buffer) {
 		
-		// ImageBuffer imageBuffer (buffer);
+		ImageBuffer imageBuffer (buffer);
 		
-		// Bytes bytes (data);
-		// Resource resource = Resource (&bytes);
+		Bytes bytes (data);
+		Resource resource = Resource (&bytes);
 		
-		// #ifdef LIME_JPEG
-		// if (JPEG::Decode (&resource, &imageBuffer, decodeData)) {
+		#ifdef LIME_JPEG
+		if (JPEG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
 		return 0;
 		
@@ -2370,7 +2381,7 @@ namespace lime {
 		#ifdef LIME_JPEG
 		if (JPEG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -2380,18 +2391,18 @@ namespace lime {
 	}
 	
 	
-	HL_PRIM vdynamic* hl_lime_jpeg_decode_file (vbyte* path, bool decodeData, HL_ImageBuffer* buffer) {
+	HL_PRIM HL_ImageBuffer* hl_lime_jpeg_decode_file (HL_String* path, bool decodeData, HL_ImageBuffer* buffer) {
 		
-		// ImageBuffer imageBuffer (buffer);
-		// Resource resource = Resource (path.c_str ());
+		ImageBuffer imageBuffer (buffer);
+		Resource resource = Resource (path);
 		
-		// #ifdef LIME_JPEG
-		// if (JPEG::Decode (&resource, &imageBuffer, decodeData)) {
+		#ifdef LIME_JPEG
+		if (JPEG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
 		return 0;
 		
@@ -2491,7 +2502,7 @@ namespace lime {
 		
 		LZMA::Compress (&data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null ();
 		#endif
@@ -2523,7 +2534,7 @@ namespace lime {
 		
 		LZMA::Decompress (&data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null ();
 		#endif
@@ -2667,7 +2678,7 @@ namespace lime {
 		#ifdef LIME_PNG
 		if (PNG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -2677,19 +2688,19 @@ namespace lime {
 	}
 	
 	
-	HL_PRIM vdynamic* hl_lime_png_decode_bytes (HL_Bytes* data, bool decodeData, HL_ImageBuffer* buffer) {
+	HL_PRIM HL_ImageBuffer* hl_lime_png_decode_bytes (HL_Bytes* data, bool decodeData, HL_ImageBuffer* buffer) {
 		
-		// ImageBuffer imageBuffer (buffer);
-		// Bytes bytes (data);
-		// Resource resource = Resource (&bytes);
+		ImageBuffer imageBuffer (buffer);
+		Bytes bytes (data);
+		Resource resource = Resource (&bytes);
 		
-		// #ifdef LIME_PNG
-		// if (PNG::Decode (&resource, &imageBuffer, decodeData)) {
+		#ifdef LIME_PNG
+		if (PNG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
 		return 0;
 		
@@ -2704,7 +2715,7 @@ namespace lime {
 		#ifdef LIME_PNG
 		if (PNG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-			return imageBuffer.Value ();
+			return (value)imageBuffer.Value ();
 			
 		}
 		#endif
@@ -2714,18 +2725,18 @@ namespace lime {
 	}
 	
 	
-	HL_PRIM vdynamic* hl_lime_png_decode_file (vbyte* path, bool decodeData, HL_Bytes* buffer) {
+	HL_PRIM HL_ImageBuffer* hl_lime_png_decode_file (HL_String* path, bool decodeData, HL_ImageBuffer* buffer) {
 		
-		// ImageBuffer imageBuffer (buffer);
-		// Resource resource = Resource (path.c_str ());
+		ImageBuffer imageBuffer (buffer);
+		Resource resource = Resource (path);
 		
-		// #ifdef LIME_PNG
-		// if (PNG::Decode (&resource, &imageBuffer, decodeData)) {
+		#ifdef LIME_PNG
+		if (PNG::Decode (&resource, &imageBuffer, decodeData)) {
 			
-		// 	return imageBuffer.Value ();
+			return (HL_ImageBuffer*)imageBuffer.Value ();
 			
-		// }
-		// #endif
+		}
+		#endif
 		
 		return 0;
 		
@@ -2871,7 +2882,7 @@ namespace lime {
 			
 		}
 		
-		return buffer.Value ();
+		return (value)buffer.Value ();
 		
 	}
 	
@@ -3403,7 +3414,7 @@ namespace lime {
 		Font *font = (Font*)val_data (fontHandle);
 		Bytes bytes (data);
 		text->Position (font, size, textString.c_str (), &bytes);
-		return bytes.Value ();
+		return (value)bytes.Value ();
 		
 		#endif
 		
@@ -3949,7 +3960,7 @@ namespace lime {
 		
 		Zlib::Compress (ZLIB, &data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null ();
 		#endif
@@ -3981,7 +3992,7 @@ namespace lime {
 		
 		Zlib::Decompress (ZLIB, &data, &result);
 		
-		return result.Value ();
+		return (value)result.Value ();
 		#else
 		return alloc_null ();
 		#endif
@@ -4072,6 +4083,8 @@ namespace lime {
 	DEFINE_PRIME1v (lime_image_data_util_unmultiply_alpha);
 	DEFINE_PRIME4 (lime_image_encode);
 	DEFINE_PRIME2 (lime_image_load);
+	DEFINE_PRIME2 (lime_image_load_bytes);
+	DEFINE_PRIME2 (lime_image_load_file);
 	DEFINE_PRIME0 (lime_jni_getenv);
 	DEFINE_PRIME2v (lime_joystick_event_manager_register);
 	DEFINE_PRIME1 (lime_joystick_get_device_guid);
@@ -4192,9 +4205,9 @@ namespace lime {
 	DEFINE_HL_PRIM (_BOOL, lime_application_update, _TCFFIPOINTER);
 	// DEFINE_PRIME2 (lime_audio_load);
 	// DEFINE_PRIME2 (lime_bytes_from_data_pointer);
-	DEFINE_HL_PRIM (_F64, lime_bytes_get_data_pointer, _BYTES);
+	DEFINE_HL_PRIM (_F64, lime_bytes_get_data_pointer, _TBYTES);
 	// DEFINE_PRIME2 (lime_bytes_get_data_pointer_offset);
-	// DEFINE_PRIME2 (lime_bytes_read_file);
+	DEFINE_HL_PRIM (_TBYTES, lime_bytes_read_file, _STRING _TBYTES);
 	// DEFINE_PRIME1 (lime_cffi_get_native_pointer);
 	// DEFINE_PRIME1 (lime_cffi_set_finalizer);
 	DEFINE_HL_PRIM (_VOID, lime_clipboard_event_manager_register, _FUN(_VOID, _NO_ARG) _TCLIPBOARD_EVENT);
@@ -4250,6 +4263,8 @@ namespace lime {
 	// DEFINE_PRIME1v (lime_image_data_util_unmultiply_alpha);
 	// DEFINE_PRIME4 (lime_image_encode);
 	// DEFINE_PRIME2 (lime_image_load);
+	DEFINE_HL_PRIM (_TIMAGEBUFFER, lime_image_load_bytes, _TBYTES _TIMAGEBUFFER);
+	DEFINE_HL_PRIM (_TIMAGEBUFFER, lime_image_load_file, _STRING _TIMAGEBUFFER);
 	// DEFINE_PRIME0 (lime_jni_getenv);
 	DEFINE_HL_PRIM (_VOID, lime_joystick_event_manager_register, _FUN(_VOID, _NO_ARG) _TJOYSTICK_EVENT);
 	// DEFINE_PRIME1 (lime_joystick_get_device_guid);
@@ -4311,7 +4326,7 @@ namespace lime {
 	// DEFINE_PRIME2v (lime_text_layout_set_language);
 	// DEFINE_PRIME2v (lime_text_layout_set_script);
 	DEFINE_HL_PRIM (_VOID, lime_touch_event_manager_register, _FUN (_VOID, _NO_ARG) _TTOUCH_EVENT);
-	DEFINE_HL_PRIM (_VOID, lime_window_alert, _TCFFIPOINTER _BYTES _BYTES);
+	DEFINE_HL_PRIM (_VOID, lime_window_alert, _TCFFIPOINTER _TBYTES _TBYTES);
 	DEFINE_HL_PRIM (_VOID, lime_window_close, _TCFFIPOINTER);
 	DEFINE_HL_PRIM (_TCFFIPOINTER, lime_window_create, _TCFFIPOINTER _I32 _I32 _I32 _STRING);
 	DEFINE_HL_PRIM (_VOID, lime_window_event_manager_register, _FUN (_VOID, _NO_ARG) _TWINDOW_EVENT);

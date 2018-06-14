@@ -1,6 +1,7 @@
 package lime._backend.native;
 
 
+import haxe.io.Bytes;
 import lime.graphics.opengl.GLBuffer;
 import lime.graphics.opengl.GLFramebuffer;
 import lime.graphics.opengl.GLProgram;
@@ -100,6 +101,8 @@ class NativeCFFI {
 	@:cffi private static function lime_haptic_vibrate (period:Int, duration:Int):Void;
 	@:cffi private static function lime_image_encode (data:Dynamic, type:Int, quality:Int, bytes:Dynamic):Dynamic;
 	@:cffi private static function lime_image_load (data:Dynamic, buffer:Dynamic):Dynamic;
+	@:cffi private static function lime_image_load_bytes (data:Dynamic, buffer:Dynamic):Dynamic;
+	@:cffi private static function lime_image_load_file (data:String, buffer:Dynamic):Dynamic;
 	@:cffi private static function lime_image_data_util_color_transform (image:Dynamic, rect:Dynamic, colorMatrix:Dynamic):Void;
 	@:cffi private static function lime_image_data_util_copy_channel (image:Dynamic, sourceImage:Dynamic, sourceRect:Dynamic, destPoint:Dynamic, srcChannel:Int, destChannel:Int):Void;
 	@:cffi private static function lime_image_data_util_copy_pixels (image:Dynamic, sourceImage:Dynamic, sourceRect:Dynamic, destPoint:Dynamic, alphaImage:Dynamic, alphaPoint:Dynamic, mergeAlpha:Bool):Void;
@@ -206,9 +209,9 @@ class NativeCFFI {
 	@:hlNative("lime", "lime_application_update") private static function lime_application_update (handle:CFFIPointer):Bool { return false; }
 	@:cffi private static function lime_audio_load (data:Dynamic, buffer:Dynamic):Dynamic;
 	@:cffi private static function lime_bytes_from_data_pointer (data:Float, length:Int):Dynamic;
-	@:hlNative("lime", "lime_bytes_get_data_pointer") private static function lime_bytes_get_data_pointer (data:hl.Bytes):Float { return 0; }
+	@:hlNative("lime", "lime_bytes_get_data_pointer") private static function lime_bytes_get_data_pointer (data:Bytes):Float { return 0; }
 	@:cffi private static function lime_bytes_get_data_pointer_offset (data:Dynamic, offset:Int):Float;
-	@:cffi private static function lime_bytes_read_file (path:String, bytes:Dynamic):Dynamic;
+	@:hlNative("lime", "lime_bytes_read_file") private static function lime_bytes_read_file (path:String, bytes:Bytes):Bytes { return null; }
 	@:cffi private static function lime_cffi_get_native_pointer (ptr:Dynamic):Float;
 	@:hlNative("lime", "lime_clipboard_event_manager_register") private static function lime_clipboard_event_manager_register (callback:Void->Void, eventObject:ClipboardEventInfo):Void {}
 	@:cffi private static function lime_clipboard_get_text ():Dynamic;
@@ -250,6 +253,8 @@ class NativeCFFI {
 	@:cffi private static function lime_haptic_vibrate (period:Int, duration:Int):Void;
 	@:cffi private static function lime_image_encode (data:Dynamic, type:Int, quality:Int, bytes:Dynamic):Dynamic;
 	@:cffi private static function lime_image_load (data:Dynamic, buffer:Dynamic):Dynamic;
+	@:hlNative("lime", "lime_image_load_bytes") private static function lime_image_load_bytes (data:Bytes, buffer:ImageBuffer):ImageBuffer { return null; }
+	@:hlNative("lime", "lime_image_load_file") private static function lime_image_load_file (path:String, buffer:ImageBuffer):ImageBuffer { return null; }
 	@:cffi private static function lime_image_data_util_color_transform (image:Dynamic, rect:Dynamic, colorMatrix:Dynamic):Void;
 	@:cffi private static function lime_image_data_util_copy_channel (image:Dynamic, sourceImage:Dynamic, sourceRect:Dynamic, destPoint:Dynamic, srcChannel:Int, destChannel:Int):Void;
 	@:cffi private static function lime_image_data_util_copy_pixels (image:Dynamic, sourceImage:Dynamic, sourceRect:Dynamic, destPoint:Dynamic, alphaImage:Dynamic, alphaPoint:Dynamic, mergeAlpha:Bool):Void;
@@ -831,7 +836,11 @@ class NativeCFFI {
 	#if (lime_cffi && !macro && lime_curl)
 	@:cffi private static function lime_curl_getdate (date:String, now:Float):Float;
 	@:cffi private static function lime_curl_global_cleanup ():Void;
+	#if !hl
 	@:cffi private static function lime_curl_global_init (flags:Int):Int;
+	#else
+	private static function lime_curl_global_init (flags:Int):Int { return 0; }
+	#end
 	@:cffi private static function lime_curl_version ():Dynamic;
 	@:cffi private static function lime_curl_version_info (type:Int):Dynamic;
 	@:cffi private static function lime_curl_easy_cleanup (handle:CFFIPointer):Void;
@@ -847,6 +856,13 @@ class NativeCFFI {
 	@:cffi private static function lime_curl_easy_setopt (handle:CFFIPointer, option:Int, parameter:Dynamic, writeBytes:Dynamic):Int;
 	@:cffi private static function lime_curl_easy_strerror (errornum:Int):Dynamic;
 	@:cffi private static function lime_curl_easy_unescape (curl:CFFIPointer, url:String, inlength:Int, outlength:Int):Dynamic;
+	@:cffi private static function lime_curl_multi_init ():CFFIPointer;
+	@:cffi private static function lime_curl_multi_add_handle (multi_handle:CFFIPointer, curl_handle:CFFIPointer):Int;
+	@:cffi private static function lime_curl_multi_get_running_handles (multi_handle:CFFIPointer):Int;
+	@:cffi private static function lime_curl_multi_info_read (multi_handle:CFFIPointer):Dynamic;
+	@:cffi private static function lime_curl_multi_perform (multi_handle:CFFIPointer):Int;
+	@:cffi private static function lime_curl_multi_remove_handle (multi_handle:CFFIPointer, curl_handle:CFFIPointer):Int;
+	@:cffi private static function lime_curl_multi_wait (multi_handle:CFFIPointer, timeout_ms:Int):Int;
 	#end
 	
 	#if (lime_cffi && !macro && lime_opengl)
