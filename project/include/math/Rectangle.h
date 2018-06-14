@@ -2,10 +2,21 @@
 #define LIME_MATH_RECTANGLE_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
 
 
 namespace lime {
+	
+	
+	struct HL_Rectangle {
+		
+		hl_type* t;
+		double height;
+		double width;
+		double x;
+		double y;
+		
+	};
 	
 	
 	class Rectangle {
@@ -16,6 +27,7 @@ namespace lime {
 			Rectangle ();
 			Rectangle (double x, double y, double width, double height);
 			Rectangle (value rect);
+			Rectangle (HL_Rectangle* rect);
 			
 			void Contract (double x, double y, double width, double height);
 			value Value ();

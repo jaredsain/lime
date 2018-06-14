@@ -2,7 +2,8 @@
 #define LIME_UI_WINDOW_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 #include <stdint.h>
 
 
@@ -27,12 +28,25 @@ namespace lime {
 	};
 	
 	
+	struct HL_WindowEvent {
+		
+		hl_type* t;
+		int height;
+		WindowEventType type;
+		int width;
+		int windowID;
+		int x;
+		int y;
+		
+	};
+	
+	
 	class WindowEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			WindowEvent ();
 			

@@ -2,7 +2,8 @@
 #define LIME_UI_DROP_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 
 
 namespace lime {
@@ -15,12 +16,21 @@ namespace lime {
 	};
 	
 	
+	struct HL_DropEvent {
+		
+		hl_type* t;
+		vbyte* file;
+		DropEventType type;
+		
+	};
+	
+	
 	class DropEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			DropEvent ();
 			

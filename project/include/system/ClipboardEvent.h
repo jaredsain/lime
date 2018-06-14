@@ -2,7 +2,8 @@
 #define LIME_SYSTEM_CLIPBOARD_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 
 
 namespace lime {
@@ -15,12 +16,20 @@ namespace lime {
 	};
 	
 	
+	struct HL_ClipboardEvent {
+		
+		hl_type* t;
+		ClipboardEventType type;
+		
+	};
+	
+	
 	class ClipboardEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			ClipboardEvent ();
 			

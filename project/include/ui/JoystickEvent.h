@@ -2,7 +2,8 @@
 #define LIME_UI_JOYSTICK_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 
 
 namespace lime {
@@ -21,12 +22,25 @@ namespace lime {
 	};
 	
 	
+	struct HL_JoystickEvent {
+		
+		hl_type* t;
+		int id;
+		int index;
+		JoystickEventType type;
+		int value;
+		double x;
+		double y;
+		
+	};
+	
+	
 	class JoystickEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			JoystickEvent ();
 			

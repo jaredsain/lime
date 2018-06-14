@@ -2,7 +2,8 @@
 #define LIME_SYSTEM_SENSOR_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 
 
 namespace lime {
@@ -15,12 +16,24 @@ namespace lime {
 	};
 	
 	
+	struct HL_SensorEvent {
+		
+		hl_type* t;
+		int id;
+		double x;
+		double y;
+		double z;
+		SensorEventType type;
+		
+	};
+	
+	
 	class SensorEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			SensorEvent ();
 			

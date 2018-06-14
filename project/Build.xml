@@ -16,6 +16,8 @@
 	<!-- <set name="LIME_FAUDIO" value="1" /> -->
 	<set name="LIME_FREETYPE" value="1" />
 	<set name="LIME_HARFBUZZ" value="1" />
+	<!-- <set name="LIME_HASHLINK" value="1" if="windows || mac || linux" /> -->
+	<set name="LIME_HASHLINK" value="1" if="hashlink" />
 	<set name="LIME_LZMA" value="1" />
 	<set name="LIME_MBEDTLS" value="1" unless="emscripten" />
 	<!-- <set name="LIME_NEKO" value="1" if="linux" /> -->
@@ -118,6 +120,13 @@
 				<file name="src/text/TextLayout.cpp" />
 				
 			</section>
+			
+		</section>
+		
+		<section if="LIME_HASHLINK">
+			
+			<!-- <compilerflag value="-DLIBHL_EXPORTS" /> -->
+			<compilerflag value="-DLIME_HASHLINK" />
 			
 		</section>
 		
@@ -279,6 +288,7 @@
 		<file name="src/math/Vector2.cpp" />
 		<file name="src/media/containers/WAV.cpp" />
 		<file name="src/media/AudioBuffer.cpp" />
+		<file name="src/system/CFFI.cpp" />
 		<file name="src/system/CFFIPointer.cpp" />
 		<file name="src/system/ClipboardEvent.cpp" />
 		<file name="src/system/DisplayMode.cpp" />
@@ -288,6 +298,7 @@
 		<file name="src/system/SensorEvent.cpp" />
 		<file name="src/system/System.cpp" unless="ios" />
 		<file name="src/system/System.mm" if="ios" />
+		<file name="src/system/ValuePointer.cpp" />
 		<file name="src/ui/DropEvent.cpp" />
 		<file name="src/ui/GamepadEvent.cpp" />
 		<file name="src/ui/Haptic.mm" if="ios" />
@@ -381,6 +392,10 @@
 				<lib name="comdlg32.lib" />
 				<lib name="comsuppw.lib" />
 				
+				<lib name="-libpath:${HLPATH}" if="LIME_HASHLINK" />
+				<lib name="libhl.lib" if="LIME_HASHLINK" />
+				<!-- <lib name="-delayload:libhl.dll" /> -->
+				
 			</section>
 			
 			<section if="linux">
@@ -412,8 +427,11 @@
 				<lib name="/opt/local/lib/libgc.a" if="LIME_NEKO" />
 				<lib name="-lm" if="LIME_NEKO" />
 				
+				<lib name="-L${HLPATH}" />
+				<lib name="-lhl" if="LIME_HASHLINK" />
+				
 			</section>
-		
+			
 			<section if="android">
 				
 				<lib name="-L../ndll/Android" />

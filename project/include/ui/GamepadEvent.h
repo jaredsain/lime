@@ -2,7 +2,8 @@
 #define LIME_UI_GAMEPAD_EVENT_H
 
 
-#include <hx/CFFI.h>
+#include <system/CFFI.h>
+#include <system/ValuePointer.h>
 
 
 namespace lime {
@@ -19,12 +20,24 @@ namespace lime {
 	};
 	
 	
+	struct HL_GamepadEvent {
+		
+		hl_type* t;
+		int axis;
+		int button;
+		int id;
+		GamepadEventType type;
+		double value;
+		
+	};
+	
+	
 	class GamepadEvent {
 		
 		public:
 			
-			static AutoGCRoot* callback;
-			static AutoGCRoot* eventObject;
+			static ValuePointer* callback;
+			static ValuePointer* eventObject;
 			
 			GamepadEvent ();
 			

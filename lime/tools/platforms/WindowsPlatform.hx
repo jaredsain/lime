@@ -63,6 +63,10 @@ class WindowsPlatform extends PlatformTarget {
 			
 			targetType = "neko";
 			
+		} else if (project.targetFlags.exists ("hl")) {
+			
+			targetType = "hl";
+			
 		} else if (project.targetFlags.exists ("nodejs")) {
 			
 			targetType = "nodejs";
@@ -161,9 +165,11 @@ class WindowsPlatform extends PlatformTarget {
 			
 			if (!project.targetFlags.exists ("static") || targetType != "cpp") {
 				
+				var targetSuffix = (targetType == "hl") ? ".hdll" : null;
+				
 				for (ndll in project.ndlls) {
 					
-					FileHelper.copyLibrary (project, ndll, "Windows" + (is64 ? "64" : ""), "", (ndll.haxelib != null && (ndll.haxelib.name == "hxcpp" || ndll.haxelib.name == "hxlibc")) ? ".dll" : ".ndll", applicationDirectory, project.debug);
+					FileHelper.copyLibrary (project, ndll, "Windows" + (is64 ? "64" : ""), "", (ndll.haxelib != null && (ndll.haxelib.name == "hxcpp" || ndll.haxelib.name == "hxlibc")) ? ".dll" : ".ndll", applicationDirectory, project.debug, targetSuffix);
 					
 				}
 				
@@ -188,6 +194,14 @@ class WindowsPlatform extends PlatformTarget {
 				NekoHelper.createWindowsExecutable (project.templatePaths, targetDirectory + "/obj/ApplicationMain.n", executablePath, iconPath);
 				NekoHelper.copyLibraries (project.templatePaths, "windows" + (is64 ? "64" : ""), applicationDirectory);
 				
+			} else if (targetType == "hl") {
+				
+				ProcessHelper.runCommand ("", "haxe", [ hxml ]);
+				
+				if (noOutput) return;
+				
+				FileHelper.copyFile (targetDirectory + "/obj/ApplicationMain" + (project.debug ? "-Debug" : "") + ".hl", PathHelper.combine (applicationDirectory, project.app.file + ".hl"));
+				
 			} else if (targetType == "nodejs") {
 				
 				ProcessHelper.runCommand ("", "haxe", [ hxml ]);
@@ -195,7 +209,7 @@ class WindowsPlatform extends PlatformTarget {
 				if (noOutput) return;
 				
 				//NekoHelper.createExecutable (project.templatePaths, "windows" + (is64 ? "64" : ""), targetDirectory + "/obj/ApplicationMain.n", executablePath);
-				NekoHelper.copyLibraries (project.templatePaths, "windows" + (is64 ? "64" : ""), applicationDirectory);
+				//NekoHelper.copyLibraries (project.templatePaths, "windows" + (is64 ? "64" : ""), applicationDirectory);
 				
 			} else if (targetType == "cs") {
 				
@@ -352,6 +366,7 @@ class WindowsPlatform extends PlatformTarget {
 			
 			context.NEKO_FILE = targetDirectory + "/obj/ApplicationMain.n";
 			context.NODE_FILE = targetDirectory + "/bin/ApplicationMain.js";
+			context.HL_FILE = targetDirectory + "/obj/ApplicationMain.hl";
 			context.CPP_DIR = targetDirectory + "/obj";
 			context.BUILD_DIR = project.app.path + "/windows" + (is64 ? "64" : "");
 			
@@ -415,7 +430,11 @@ class WindowsPlatform extends PlatformTarget {
 			
 		}
 		
-		if (targetType == "nodejs") {
+		if (targetType == "hl") {
+			
+			ProcessHelper.runCommand (applicationDirectory, "hl", [ project.app.file + ".hl" ].concat (arguments));
+			
+		} else if (targetType == "nodejs") {
 			
 			NodeJSHelper.run (project, targetDirectory + "/bin/ApplicationMain.js", arguments);
 		
