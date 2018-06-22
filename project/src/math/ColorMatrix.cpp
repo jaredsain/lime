@@ -40,7 +40,20 @@ namespace lime {
 		value buffer_value = val_field (colorMatrix, id_buffer);
 		Bytes bytes;
 		bytes.Set (buffer_value);
-		float* src = (float*)bytes.Data ();
+		float* src = (float*)bytes.b;
+		
+		for (int i = 0; i < 20; i++) {
+			
+			data[i] = src[i];
+			
+		}
+		
+	}
+	
+	
+	ColorMatrix::ColorMatrix (ArrayBufferView* colorMatrix) {
+		
+		float* src = (float*)colorMatrix->buffer->b;
 		
 		for (int i = 0; i < 20; i++) {
 			

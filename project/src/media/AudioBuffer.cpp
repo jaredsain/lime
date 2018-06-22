@@ -11,17 +11,6 @@ namespace lime {
 	static bool init = false;
 	
 	
-	AudioBuffer::AudioBuffer () {
-		
-		bitsPerSample = 0;
-		channels = 0;
-		data = new ArrayBufferView ();
-		sampleRate = 0;
-		mValue = 0;
-		
-	}
-	
-	
 	AudioBuffer::AudioBuffer (value audioBuffer) {
 		
 		if (!init) {
@@ -45,24 +34,35 @@ namespace lime {
 			
 			bitsPerSample = 0;
 			channels = 0;
-			data = new ArrayBufferView ();
+			// data = new ArrayBufferView ();
 			sampleRate = 0;
 			
 		}
 		
-		mValue = audioBuffer;
+		// _value = audioBuffer;
 		
 	}
 	
 	
 	AudioBuffer::~AudioBuffer () {
 		
-		delete data;
+		if (data) {
+			
+			delete data;
+			
+		}
 		
 	}
 	
 	
 	value AudioBuffer::Value () {
+		
+		return Value (alloc_empty_object ());
+		
+	}
+	
+	
+	value AudioBuffer::Value (value audioBuffer) {
 		
 		if (!init) {
 			
@@ -74,17 +74,11 @@ namespace lime {
 			
 		}
 		
-		if (val_is_null (mValue)) {
-			
-			mValue = alloc_empty_object ();
-			
-		}
-		
-		alloc_field (mValue, id_bitsPerSample, alloc_int (bitsPerSample));
-		alloc_field (mValue, id_channels, alloc_int (channels));
-		alloc_field (mValue, id_data, data ? data->Value () : alloc_null ());
-		alloc_field (mValue, id_sampleRate, alloc_int (sampleRate));
-		return mValue;
+		alloc_field (audioBuffer, id_bitsPerSample, alloc_int (bitsPerSample));
+		alloc_field (audioBuffer, id_channels, alloc_int (channels));
+		alloc_field (audioBuffer, id_data, data ? data->Value (val_field (audioBuffer, id_data)) : alloc_null ());
+		alloc_field (audioBuffer, id_sampleRate, alloc_int (sampleRate));
+		return audioBuffer;
 		
 	}
 	

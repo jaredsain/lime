@@ -29,12 +29,12 @@
 namespace lime {
 	
 	
-	struct HL_AudioBuffer {
+	struct AudioBuffer {
 		
 		hl_type* t;
 		int bitsPerSample;
 		int channels;
-		HL_ArrayBufferView* data;
+		ArrayBufferView* data;
 		int sampleRate;
 		
 		vdynamic* __srcAudio;
@@ -45,29 +45,10 @@ namespace lime {
 		vdynamic* __srcSound;
 		vdynamic* __srcVorbisFile;
 		
-	};
-	
-	
-	class AudioBuffer {
-		
-		
-		public:
-			
-			AudioBuffer ();
-			AudioBuffer (value audioBuffer);
-			~AudioBuffer ();
-			
-			value Value ();
-			
-			int bitsPerSample;
-			int channels;
-			int sampleRate;
-			ArrayBufferView *data;
-			
-		private:
-			
-			value mValue;
-		
+		AudioBuffer (value audioBuffer);
+		~AudioBuffer ();
+		value Value (value audioBuffer);
+		value Value ();
 		
 	};
 	

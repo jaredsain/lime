@@ -274,6 +274,18 @@ class Font {
 			
 		}
 		
+		#if hl
+		var _glyphList = new hl.NativeArray<Glyph> (glyphList.length);
+		
+		for (i in 0...glyphList.length) {
+			
+			_glyphList[i] = glyphList[i];
+			
+		}
+		
+		var glyphList = _glyphList;
+		#end
+		
 		NativeCFFI.lime_font_set_size (src, fontSize);
 		
 		var bytes = Bytes.alloc (0);
@@ -446,7 +458,7 @@ class Font {
 		#if (lime_cffi && !macro)
 		__fontPathWithoutDirectory = null;
 		
-		src = NativeCFFI.lime_font_load (bytes);
+		src = NativeCFFI.lime_font_load_bytes (bytes);
 		
 		__initializeSource ();
 		#end
@@ -461,7 +473,7 @@ class Font {
 		#if (lime_cffi && !macro)
 		__fontPathWithoutDirectory = Path.withoutDirectory (__fontPath);
 		
-		src = NativeCFFI.lime_font_load (__fontPath);
+		src = NativeCFFI.lime_font_load_file (__fontPath);
 		
 		__initializeSource ();
 		#end

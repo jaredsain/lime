@@ -67,7 +67,7 @@ class NativeRenderer {
 		#else
 		
 		#if hl
-		var type = @:privateAccess String.fromUCS2 (NativeCFFI.lime_renderer_get_type (handle));
+		var type = @:privateAccess String.fromUTF8 (NativeCFFI.lime_renderer_get_type (handle));
 		#else
 		var type:String = NativeCFFI.lime_renderer_get_type (handle);
 		#end
@@ -233,7 +233,7 @@ class NativeRenderer {
 		if (!useHardware) {
 			
 			#if lime_cairo
-			var lock:Dynamic = NativeCFFI.lime_renderer_lock (handle);
+			var lock:Dynamic = NativeCFFI.lime_renderer_lock (handle #if hl, { width: 0, height: 0, pixels: 0., pitch: 0 } #end);
 			
 			if (lock != null && (cacheLock == null || cacheLock.pixels != lock.pixels || cacheLock.width != lock.width || cacheLock.height != lock.height)) {
 				

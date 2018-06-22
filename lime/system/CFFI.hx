@@ -112,7 +112,21 @@ class CFFI {
 				#if cpp
 				return cpp.Lib.load (__moduleNames.get (library), method, args);
 				#elseif neko
+				#if neko_cffi_trace
+				
+				var result:Dynamic = neko.Lib.load (__moduleNames.get (library), method, args);
+				if (result == null) return null;
+				
+				return Reflect.makeVarArgs (function (args) {
+					
+					trace ("Called " + library + "@" + method);
+					return Reflect.callMethod (result, result, args);
+					
+				});
+				
+				#else
 				return neko.Lib.load (__moduleNames.get (library), method, args);
+				#end
 				#elseif nodejs
 				return untyped __nodeNDLLModule.load_lib (__moduleNames.get (library), method, args);
 				#elseif java

@@ -40,6 +40,11 @@ class Gamepad {
 	public static function addMappings (mappings:Array<String>):Void {
 		
 		#if (lime_cffi && !macro)
+		#if hl
+		var _mappings = new hl.NativeArray<String> (mappings.length);
+		for (i in 0...mappings.length) _mappings[i] = mappings[i];
+		var mappings = _mappings;
+		#end
 		NativeCFFI.lime_gamepad_add_mappings (mappings);
 		#end
 		
@@ -79,7 +84,11 @@ class Gamepad {
 	@:noCompletion private inline function get_guid ():String {
 		
 		#if (lime_cffi && !macro)
+		#if hl
+		return @:privateAccess String.fromUTF8 (NativeCFFI.lime_gamepad_get_device_guid (this.id));
+		#else
 		return NativeCFFI.lime_gamepad_get_device_guid (this.id);
+		#end
 		#elseif (js && html5)
 		var devices = Joystick.__getDeviceData ();
 		return devices[this.id].id;
@@ -93,7 +102,11 @@ class Gamepad {
 	@:noCompletion private inline function get_name ():String {
 		
 		#if (lime_cffi && !macro)
+		#if hl
+		return @:privateAccess String.fromUTF8 (NativeCFFI.lime_gamepad_get_device_name (this.id));
+		#else
 		return NativeCFFI.lime_gamepad_get_device_name (this.id);
+		#end
 		#elseif (js && html5)
 		var devices = Joystick.__getDeviceData ();
 		return devices[this.id].id;
