@@ -65,11 +65,11 @@ android {
 	}
 	
 	android.applicationVariants.all { variant ->
-        variant.outputs.each { output ->
+        variant.outputs.all { output ->
             def outputFile = output.outputFile
 			
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                output.outputFile = new File(outputFile.parent, "::APP_FILE::-" + variant.buildType.name + ".apk")
+                outputFileName = "::APP_FILE::-" + variant.buildType.name + ".apk"
             }
         }
     }
