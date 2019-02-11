@@ -1,7 +1,6 @@
 package lime.tools;
 
 
-import haxe.xml.Fast;
 import hxp.*;
 import lime.tools.CommandHelper;
 import lime.tools.ModuleHelper;
@@ -14,6 +13,12 @@ import lime.utils.AssetManifest;
 #end
 import sys.io.File;
 import sys.FileSystem;
+
+#if (haxe_ver >= 4)
+import haxe.xml.Access;
+#else
+import haxe.xml.Fast as Access;
+#end
 
 
 class ProjectXMLParser extends HXProject {
@@ -214,7 +219,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function isValidElement (element:Fast, section:String):Bool {
+	private function isValidElement (element:Access, section:String):Bool {
 
 		if (element.x.get ("if") != null) {
 
@@ -442,7 +447,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseAppElement (element:Fast, extensionPath:String):Void {
+	private function parseAppElement (element:Access, extensionPath:String):Void {
 
 		for (attribute in element.x.attributes ()) {
 
@@ -500,7 +505,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseAssetsElement (element:Fast, basePath:String = "", isTemplate:Bool = false):Void {
+	private function parseAssetsElement (element:Access, basePath:String = "", isTemplate:Bool = false):Void {
 
 		var path = "";
 		var embed:Null<Bool> = null;
@@ -900,7 +905,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseCommandElement (element:Fast, commandList:Array<CLICommand>):Void {
+	private function parseCommandElement (element:Access, commandList:Array<CLICommand>):Void {
 
 		var command:CLICommand = null;
 
@@ -947,7 +952,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseMetaElement (element:Fast):Void {
+	private function parseMetaElement (element:Access):Void {
 
 		for (attribute in element.x.attributes ()) {
 
@@ -980,7 +985,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseModuleElement (element:Fast, basePath:String = "", moduleData:ModuleData = null):Void {
+	private function parseModuleElement (element:Access, basePath:String = "", moduleData:ModuleData = null):Void {
 
 		var topLevel = (moduleData == null);
 
@@ -1100,7 +1105,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseOutputElement (element:Fast, extensionPath:String):Void {
+	private function parseOutputElement (element:Access, extensionPath:String):Void {
 
 		if (element.has.name) {
 
@@ -1123,7 +1128,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseXML (xml:Fast, section:String, extensionPath:String = ""):Void {
+	private function parseXML (xml:Access, section:String, extensionPath:String = ""):Void {
 
 		for (element in xml.elements) {
 
@@ -2157,7 +2162,7 @@ class ProjectXMLParser extends HXProject {
 	}
 
 
-	private function parseWindowElement (element:Fast):Void {
+	private function parseWindowElement (element:Access):Void {
 
 		var id = 0;
 
@@ -2184,19 +2189,23 @@ class ProjectXMLParser extends HXProject {
 
 					value = StringTools.replace (value, "#", "");
 
-					if (value.indexOf ("0x") == -1) {
-
-						value = "0x" + value;
-
-					}
-
-					if (value == "0x" || (value.length == 10 && StringTools.startsWith (value, "0x00"))) {
+					if (value == "null" || value == "transparent" || value == "") {
 
 						windows[id].background = null;
 
 					} else {
 
-						windows[id].background = Std.parseInt (value);
+						if (value.indexOf ("0x") == -1) value = "0x" + value;
+
+						if (value.length == 10 && StringTools.startsWith (value, "0x00")) {
+
+							windows[id].background = null;
+
+						} else {
+
+							windows[id].background = Std.parseInt (value);
+
+						}
 
 					}
 
@@ -2268,7 +2277,7 @@ class ProjectXMLParser extends HXProject {
 
 		try {
 
-			xml = new Fast (Xml.parse (File.getContent (projectFile)).firstElement ());
+			xml = new Access (Xml.parse (File.getContent (projectFile)).firstElement ());
 			extensionPath = Path.directory (projectFile);
 
 		} catch (e:Dynamic) {

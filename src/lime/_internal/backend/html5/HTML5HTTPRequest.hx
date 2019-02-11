@@ -30,7 +30,7 @@ class HTML5HTTPRequest {
 	private static var originHostname:String;
 	private static var originPort:String;
 	private static var originProtocol:String;
-	private static var requestLimit = 4;
+	private static var requestLimit = 17;
 	private static var requestQueue = new List<QueueItem> ();
 	private static var supportsImageProgress:Null<Bool>;
 
@@ -42,7 +42,7 @@ class HTML5HTTPRequest {
 
 	public function new () {
 
-		validStatus0 = ~/Tizen/gi.match (Browser.window.navigator.userAgent);
+		validStatus0 = #if allow_status_0 true #else ~/Tizen/gi.match (Browser.window.navigator.userAgent) #end;
 
 	}
 

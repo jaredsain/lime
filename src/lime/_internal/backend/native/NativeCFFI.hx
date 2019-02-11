@@ -111,8 +111,8 @@ class NativeCFFI {
 	@:cffi private static function lime_font_load_bytes (data:Dynamic):Dynamic;
 	@:cffi private static function lime_font_load_file (path:Dynamic):Dynamic;
 	@:cffi private static function lime_font_outline_decompose (handle:Dynamic, size:Int):Dynamic;
-	@:cffi private static function lime_font_render_glyph (handle:Dynamic, index:Int, data:Dynamic):Bool;
-	@:cffi private static function lime_font_render_glyphs (handle:Dynamic, indices:Dynamic, data:Dynamic):Bool;
+	@:cffi private static function lime_font_render_glyph (handle:Dynamic, index:Int, data:Dynamic):Dynamic;
+	@:cffi private static function lime_font_render_glyphs (handle:Dynamic, indices:Dynamic, data:Dynamic):Dynamic;
 	@:cffi private static function lime_font_set_size (handle:Dynamic, size:Int):Void;
 	@:cffi private static function lime_gamepad_add_mappings (mappings:Dynamic):Void;
 	@:cffi private static function lime_gamepad_get_device_guid (id:Int):Dynamic;
@@ -258,8 +258,8 @@ class NativeCFFI {
 	private static var lime_font_load_bytes = new cpp.Callable<cpp.Object->cpp.Object> (cpp.Prime._loadPrime ("lime", "lime_font_load_bytes", "oo", false));
 	private static var lime_font_load_file = new cpp.Callable<cpp.Object->cpp.Object> (cpp.Prime._loadPrime ("lime", "lime_font_load_file", "oo", false));
 	private static var lime_font_outline_decompose = new cpp.Callable<cpp.Object->Int->cpp.Object> (cpp.Prime._loadPrime ("lime", "lime_font_outline_decompose", "oio", false));
-	private static var lime_font_render_glyph = new cpp.Callable<cpp.Object->Int->cpp.Object->Bool> (cpp.Prime._loadPrime ("lime", "lime_font_render_glyph", "oiob", false));
-	private static var lime_font_render_glyphs = new cpp.Callable<cpp.Object->cpp.Object->cpp.Object->Bool> (cpp.Prime._loadPrime ("lime", "lime_font_render_glyphs", "ooob", false));
+	private static var lime_font_render_glyph = new cpp.Callable<cpp.Object->Int->cpp.Object->cpp.Object> (cpp.Prime._loadPrime ("lime", "lime_font_render_glyph", "oioo", false));
+	private static var lime_font_render_glyphs = new cpp.Callable<cpp.Object->cpp.Object->cpp.Object->cpp.Object> (cpp.Prime._loadPrime ("lime", "lime_font_render_glyphs", "oooo", false));
 	private static var lime_font_set_size = new cpp.Callable<cpp.Object->Int->cpp.Void> (cpp.Prime._loadPrime ("lime", "lime_font_set_size", "oiv", false));
 	private static var lime_gamepad_add_mappings = new cpp.Callable<cpp.Object->cpp.Void> (cpp.Prime._loadPrime ("lime", "lime_gamepad_add_mappings", "ov", false));
 	private static var lime_gamepad_get_device_guid = new cpp.Callable<Int->cpp.Object> (cpp.Prime._loadPrime ("lime", "lime_gamepad_get_device_guid", "io", false));
@@ -557,8 +557,8 @@ class NativeCFFI {
 	@:hlNative("lime", "lime_font_load_bytes") private static function lime_font_load_bytes (data:Bytes):CFFIPointer { return null; }
 	@:hlNative("lime", "lime_font_load_file") private static function lime_font_load_file (path:String):CFFIPointer { return null; }
 	@:hlNative("lime", "lime_font_outline_decompose") private static function lime_font_outline_decompose (handle:CFFIPointer, size:Int):Dynamic { return null; }
-	@:hlNative("lime", "lime_font_render_glyph") private static function lime_font_render_glyph (handle:CFFIPointer, index:Int, data:Bytes):Bool { return false; }
-	@:hlNative("lime", "lime_font_render_glyphs") private static function lime_font_render_glyphs (handle:CFFIPointer, indices:hl.NativeArray<Int>, data:Bytes):Bool { return false; }
+	@:hlNative("lime", "lime_font_render_glyph") private static function lime_font_render_glyph (handle:CFFIPointer, index:Int, data:Bytes):Bytes { return null; }
+	@:hlNative("lime", "lime_font_render_glyphs") private static function lime_font_render_glyphs (handle:CFFIPointer, indices:hl.NativeArray<Int>, data:Bytes):Bytes { return null; }
 	@:hlNative("lime", "lime_font_set_size") private static function lime_font_set_size (handle:CFFIPointer, size:Int):Void {}
 	@:hlNative("lime", "lime_gamepad_add_mappings") private static function lime_gamepad_add_mappings (mappings:hl.NativeArray<String>):Void {}
 	@:hlNative("lime", "lime_gamepad_get_device_guid") private static function lime_gamepad_get_device_guid (id:Int):hl.Bytes { return null; }
@@ -3432,35 +3432,36 @@ class NativeCFFI {
 	#end
 
 	#if hl
-	@:cffi private static function lime_vorbis_file_bitrate (vorbisFile:Dynamic, bitstream:Int):Int;
-	@:cffi private static function lime_vorbis_file_bitrate_instant (vorbisFile:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_clear (vorbisFile:Dynamic):Void;
-	@:cffi private static function lime_vorbis_file_comment (vorbisFile:Dynamic, bitstream:Int):Dynamic;
-	@:cffi private static function lime_vorbis_file_crosslap (vorbisFile:Dynamic, otherVorbisFile:Dynamic):Dynamic;
-	@:cffi private static function lime_vorbis_file_from_bytes (bytes:Dynamic):Dynamic;
-	@:cffi private static function lime_vorbis_file_from_file (path:String):Dynamic;
-	@:cffi private static function lime_vorbis_file_info (vorbisFile:Dynamic, bitstream:Int):Dynamic;
-	@:cffi private static function lime_vorbis_file_pcm_seek (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_pcm_seek_lap (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_pcm_seek_page (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_pcm_seek_page_lap (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_raw_seek (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_raw_seek_lap (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_pcm_tell (vorbisFile:Dynamic):Dynamic;
-	@:cffi private static function lime_vorbis_file_pcm_total (vorbisFile:Dynamic, bitstream:Int):Dynamic;
-	@:cffi private static function lime_vorbis_file_raw_tell (vorbisFile:Dynamic):Dynamic;
-	@:cffi private static function lime_vorbis_file_raw_total (vorbisFile:Dynamic, bitstream:Int):Dynamic;
-	@:cffi private static function lime_vorbis_file_read (vorbisFile:Dynamic, buffer:Dynamic, position:Int, length:Int, bigendianp:Bool, word:Int, signed:Bool):Dynamic;
-	@:cffi private static function lime_vorbis_file_read_float (vorbisFile:Dynamic, pcmChannels:Dynamic, samples:Int):Dynamic;
-	@:cffi private static function lime_vorbis_file_seekable (vorbisFile:Dynamic):Bool;
-	@:cffi private static function lime_vorbis_file_serial_number (vorbisFile:Dynamic, bitstream:Int):Int;
-	@:cffi private static function lime_vorbis_file_streams (vorbisFile:Dynamic):Int;
-	@:cffi private static function lime_vorbis_file_time_seek (vorbisFile:Dynamic, s:Float):Int;
-	@:cffi private static function lime_vorbis_file_time_seek_lap (vorbisFile:Dynamic, s:Float):Int;
-	@:cffi private static function lime_vorbis_file_time_seek_page (vorbisFile:Dynamic, s:Float):Int;
-	@:cffi private static function lime_vorbis_file_time_seek_page_lap (vorbisFile:Dynamic, s:Float):Int;
-	@:cffi private static function lime_vorbis_file_time_tell (vorbisFile:Dynamic):Float;
-	@:cffi private static function lime_vorbis_file_time_total (vorbisFile:Dynamic, bitstream:Int):Float;
+	// TODO
+	private static function lime_vorbis_file_bitrate (vorbisFile:Dynamic, bitstream:Int):Int { return 0; }
+	private static function lime_vorbis_file_bitrate_instant (vorbisFile:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_clear (vorbisFile:Dynamic):Void {}
+	private static function lime_vorbis_file_comment (vorbisFile:Dynamic, bitstream:Int):Dynamic { return null; }
+	private static function lime_vorbis_file_crosslap (vorbisFile:Dynamic, otherVorbisFile:Dynamic):Dynamic { return null; }
+	private static function lime_vorbis_file_from_bytes (bytes:Dynamic):Dynamic { return null; }
+	private static function lime_vorbis_file_from_file (path:String):Dynamic { return null; }
+	private static function lime_vorbis_file_info (vorbisFile:Dynamic, bitstream:Int):Dynamic { return null; }
+	private static function lime_vorbis_file_pcm_seek (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_pcm_seek_lap (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_pcm_seek_page (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_pcm_seek_page_lap (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_raw_seek (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_raw_seek_lap (vorbisFile:Dynamic, posLow:Dynamic, posHigh:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_pcm_tell (vorbisFile:Dynamic):Dynamic { return null; }
+	private static function lime_vorbis_file_pcm_total (vorbisFile:Dynamic, bitstream:Int):Dynamic { return null; }
+	private static function lime_vorbis_file_raw_tell (vorbisFile:Dynamic):Dynamic { return null; }
+	private static function lime_vorbis_file_raw_total (vorbisFile:Dynamic, bitstream:Int):Dynamic { return null; }
+	private static function lime_vorbis_file_read (vorbisFile:Dynamic, buffer:Dynamic, position:Int, length:Int, bigendianp:Bool, word:Int, signed:Bool):Dynamic { return null; }
+	private static function lime_vorbis_file_read_float (vorbisFile:Dynamic, pcmChannels:Dynamic, samples:Int):Dynamic { return null; }
+	private static function lime_vorbis_file_seekable (vorbisFile:Dynamic):Bool { return false; }
+	private static function lime_vorbis_file_serial_number (vorbisFile:Dynamic, bitstream:Int):Int { return 0; }
+	private static function lime_vorbis_file_streams (vorbisFile:Dynamic):Int { return 0; }
+	private static function lime_vorbis_file_time_seek (vorbisFile:Dynamic, s:Float):Int { return 0; }
+	private static function lime_vorbis_file_time_seek_lap (vorbisFile:Dynamic, s:Float):Int { return 0; }
+	private static function lime_vorbis_file_time_seek_page (vorbisFile:Dynamic, s:Float):Int { return 0; }
+	private static function lime_vorbis_file_time_seek_page_lap (vorbisFile:Dynamic, s:Float):Int { return 0; }
+	private static function lime_vorbis_file_time_tell (vorbisFile:Dynamic):Float { return 0; }
+	private static function lime_vorbis_file_time_total (vorbisFile:Dynamic, bitstream:Int):Float { return 0; }
 	#end
 
 	#end

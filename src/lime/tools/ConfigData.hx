@@ -1,8 +1,14 @@
 package lime.tools;
 
 
-import haxe.xml.Fast;
 import hxp.*;
+
+
+#if (haxe_ver >= 4)
+import haxe.xml.Access;
+#else
+import haxe.xml.Fast as Access;
+#end
 
 
 abstract ConfigData(Dynamic) to Dynamic from Dynamic {
@@ -361,7 +367,7 @@ abstract ConfigData(Dynamic) to Dynamic from Dynamic {
 	}
 
 
-	public function parse (elem:Fast, substitute:String->String = null):Void {
+	public function parse (elem:Access, substitute:String->String = null):Void {
 
 		var bucket = this;
 		var bucketType = "";
@@ -393,7 +399,7 @@ abstract ConfigData(Dynamic) to Dynamic from Dynamic {
 	}
 
 
-	private function parseAttributes (elem:Fast, bucket:Dynamic, substitute:String->String = null):Void {
+	private function parseAttributes (elem:Access, bucket:Dynamic, substitute:String->String = null):Void {
 
 		for (attrName in elem.x.attributes ()) {
 
@@ -410,7 +416,7 @@ abstract ConfigData(Dynamic) to Dynamic from Dynamic {
 	}
 
 
-	private function parseChildren (elem:Fast, bucket:Dynamic, depth:Int = 0, substitute:String->String = null):Void {
+	private function parseChildren (elem:Access, bucket:Dynamic, depth:Int = 0, substitute:String->String = null):Void {
 
 		for (child in elem.elements) {
 
@@ -483,7 +489,7 @@ abstract ConfigData(Dynamic) to Dynamic from Dynamic {
 	}
 
 
-	private function parseValue (elem:Fast, bucket:Dynamic, substitute:String->String = null):Void {
+	private function parseValue (elem:Access, bucket:Dynamic, substitute:String->String = null):Void {
 
 		if (elem.innerHTML != "") {
 

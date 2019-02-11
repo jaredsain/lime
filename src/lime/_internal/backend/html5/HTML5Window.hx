@@ -5,6 +5,7 @@ import haxe.Timer;
 import js.html.webgl.RenderingContext;
 import js.html.CanvasElement;
 import js.html.DivElement;
+import js.html.DragEvent;
 import js.html.Element;
 import js.html.FocusEvent;
 import js.html.InputElement;
@@ -63,7 +64,6 @@ class HTML5Window {
 	private var cacheMouseX:Float;
 	private var cacheMouseY:Float;
 	private var cursor:MouseCursor;
-	private var cursorHidden:Bool;
 	private var currentTouches = new Map<Int, Touch> ();
 	private var isFullscreen:Bool;
 	private var parent:Window;
@@ -82,11 +82,17 @@ class HTML5Window {
 
 		this.parent = parent;
 
+		cursor = DEFAULT;
 		cacheMouseX = 0;
 		cacheMouseY = 0;
 
 		var attributes = parent.__attributes;
 		if (!Reflect.hasField (attributes, "context")) attributes.context = {};
+
+		#if dom
+		attributes.context.type = DOM;
+		attributes.context.version = "";
+		#end
 
 		renderType = attributes.context.type;
 
@@ -97,11 +103,6 @@ class HTML5Window {
 		}
 
 		var element = parent.element;
-
-		#if dom
-		attributes.context.type = DOM;
-		attributes.context.version = "";
-		#end
 
 		if (Reflect.hasField (attributes, "allowHighDPI") && attributes.allowHighDPI && renderType != DOM) {
 
@@ -226,16 +227,11 @@ class HTML5Window {
 
 			}
 
-			// Disable image drag on Firefox
-			Browser.document.addEventListener ("dragstart", function (e) {
-				if (e.target.nodeName.toLowerCase () == "img") {
-					e.preventDefault ();
-					return false;
-				}
-				return true;
-			}, false);
-
 			element.addEventListener ("contextmenu", handleContextMenuEvent, true);
+
+			element.addEventListener ("dragstart", handleDragEvent, true);
+			element.addEventListener ("dragover", handleDragEvent, true);
+			element.addEventListener ("drop", handleDragEvent, true);
 
 			element.addEventListener ("touchstart", handleTouchEvent, true);
 			element.addEventListener ("touchmove", handleTouchEvent, true);
@@ -440,7 +436,7 @@ class HTML5Window {
 
 			case "webglcontextlost":
 
-				event.preventDefault ();
+				if (event.cancelable) event.preventDefault ();
 
 				// #if !display
 				if (GL.context != null) {
@@ -469,7 +465,7 @@ class HTML5Window {
 
 	private function handleContextMenuEvent (event:MouseEvent):Void {
 
-		if (parent.onMouseUp.canceled) {
+		if ((parent.onMouseUp.canceled || parent.onMouseDown.canceled) && event.cancelable) {
 
 			event.preventDefault ();
 
@@ -481,7 +477,43 @@ class HTML5Window {
 	private function handleCutOrCopyEvent (event:ClipboardEvent):Void {
 
 		event.clipboardData.setData ("text/plain", Clipboard.text);
-		event.preventDefault ();
+		if (event.cancelable) event.preventDefault ();
+
+	}
+
+
+	private function handleDragEvent (event:DragEvent):Bool {
+
+		switch (event.type) {
+
+			case "dragstart":
+
+				if (cast (event.target, Element).nodeName.toLowerCase () == "img" && event.cancelable) {
+
+					event.preventDefault ();
+					return false;
+
+				}
+
+			case "dragover":
+
+				event.preventDefault ();
+				return false;
+
+			case "drop":
+
+				// TODO: Create a formal API that supports HTML5 file objects
+				if (event.dataTransfer != null && event.dataTransfer.files.length > 0) {
+
+					parent.onDropFile.dispatch (cast event.dataTransfer.files);
+					event.preventDefault ();
+					return false;
+
+				}
+
+		}
+
+		return true;
 
 	}
 
@@ -644,7 +676,7 @@ class HTML5Window {
 
 					parent.onMouseDown.dispatch (x, y, event.button);
 
-					if (parent.onMouseDown.canceled) {
+					if (parent.onMouseDown.canceled && event.cancelable) {
 
 						event.preventDefault ();
 
@@ -656,7 +688,7 @@ class HTML5Window {
 
 						parent.onEnter.dispatch ();
 
-						if (parent.onEnter.canceled) {
+						if (parent.onEnter.canceled && event.cancelable) {
 
 							event.preventDefault ();
 
@@ -670,7 +702,7 @@ class HTML5Window {
 
 						parent.onLeave.dispatch ();
 
-						if (parent.onLeave.canceled) {
+						if (parent.onLeave.canceled && event.cancelable) {
 
 							event.preventDefault ();
 
@@ -690,7 +722,7 @@ class HTML5Window {
 
 					parent.onMouseUp.dispatch (x, y, event.button);
 
-					if (parent.onMouseUp.canceled) {
+					if (parent.onMouseUp.canceled && event.cancelable) {
 
 						event.preventDefault ();
 
@@ -703,7 +735,7 @@ class HTML5Window {
 						parent.onMouseMove.dispatch (x, y);
 						parent.onMouseMoveRelative.dispatch (x - cacheMouseX, y - cacheMouseY);
 
-						if (parent.onMouseMove.canceled || parent.onMouseMoveRelative.canceled) {
+						if ((parent.onMouseMove.canceled || parent.onMouseMoveRelative.canceled) && event.cancelable) {
 
 							event.preventDefault ();
 
@@ -731,7 +763,7 @@ class HTML5Window {
 
 			parent.onMouseWheel.dispatch (untyped event.deltaX, -untyped event.deltaY, deltaMode);
 
-			if (parent.onMouseWheel.canceled) {
+			if (parent.onMouseWheel.canceled && event.cancelable) {
 
 				event.preventDefault ();
 
@@ -755,7 +787,7 @@ class HTML5Window {
 
 			}
 
-			event.preventDefault ();
+			if (event.cancelable) event.preventDefault ();
 
 		}
 
@@ -772,7 +804,7 @@ class HTML5Window {
 
 	private function handleTouchEvent (event:TouchEvent):Void {
 
-		event.preventDefault ();
+		if (event.cancelable) event.preventDefault ();
 
 		var rect = null;
 
@@ -1045,7 +1077,7 @@ class HTML5Window {
 
 			if (value == null) {
 
-				parent.element.style.cursor = null;
+				parent.element.style.cursor = "none";
 
 			} else {
 
@@ -1318,21 +1350,6 @@ class HTML5Window {
 		}
 
 		return value;
-
-	}
-
-
-	public function showCursor ():Void {
-
-		if (cursorHidden) {
-
-			cursorHidden = false;
-
-			var cacheValue = cursor;
-			cursor = null;
-			setCursor (cacheValue);
-
-		}
 
 	}
 
