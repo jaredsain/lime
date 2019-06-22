@@ -188,7 +188,7 @@ class AndroidHelper
 
 		if (project.environment.exists("JAVA_HOME"))
 		{
-			Sys.putEnv("JAVA_HOME", project.environment.get("JAVA_HOME"));
+			Sys.putEnv("JAVA_HOME", "/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home");//project.environment.get("JAVA_HOME"));
 		}
 	}
 

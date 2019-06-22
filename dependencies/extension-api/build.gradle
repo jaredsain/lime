@@ -3,6 +3,7 @@ buildscript {
 		jcenter {
 			url "http://jcenter.bintray.com/"
 		}
+		google()
 	}
 	
 	dependencies {
