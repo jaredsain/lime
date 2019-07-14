@@ -5,6 +5,7 @@ import haxe.io.Bytes as HaxeBytes;
 import haxe.Serializer;
 import haxe.Unserializer;
 import hxp.*;
+import lime._internal.format.Base64;
 import lime.tools.AssetType;
 import lime.tools.Asset;
 import lime.tools.HXProject;
@@ -27,9 +28,9 @@ class AssetHelper
 			"jpg" => IMAGE, "jpeg" => IMAGE, "png" => IMAGE, "gif" => IMAGE, "webp" => IMAGE, "bmp" => IMAGE, "tiff" => IMAGE, "jfif" => IMAGE, "otf" => FONT,
 			"ttf" => FONT, "wav" => SOUND, "wave" => SOUND, "mp3" => MUSIC, "mp2" => MUSIC, "exe" => BINARY, "bin" => BINARY, "so" => BINARY, "pch" => BINARY,
 			"dll" => BINARY, "zip" => BINARY, "tar" => BINARY, "gz" => BINARY, "fla" => BINARY, "swf" => BINARY, "atf" => BINARY, "psd" => BINARY,
-			"awd" => BINARY, "txt" => TEXT, "text" => TEXT, "xml" => TEXT, "java" => TEXT, "hx" => TEXT, "cpp" => TEXT, "c" => TEXT, "h" => TEXT, "cs" => TEXT,
-			"js" => TEXT, "mm" => TEXT, "hxml" => TEXT, "html" => TEXT, "json" => TEXT, "css" => TEXT, "gpe" => TEXT, "pbxproj" => TEXT, "plist" => TEXT,
-			"properties" => TEXT, "ini" => TEXT, "hxproj" => TEXT, "nmml" => TEXT, "lime" => TEXT, "svg" => TEXT,
+			"awd" => BINARY, "txt" => TEXT, "text" => TEXT, "xml" => TEXT, "java" => TEXT, "hx" => TEXT, "cpp" => TEXT, "c" => TEXT, "h" => TEXT,
+			"cs" => TEXT, "js" => TEXT, "mm" => TEXT, "hxml" => TEXT, "html" => TEXT, "json" => TEXT, "css" => TEXT, "gpe" => TEXT, "pbxproj" => TEXT,
+			"plist" => TEXT, "properties" => TEXT, "ini" => TEXT, "hxproj" => TEXT, "nmml" => TEXT, "lime" => TEXT, "svg" => TEXT,
 
 		];
 	}
@@ -46,7 +47,7 @@ class AssetHelper
 			{
 				if (asset.encoding == AssetEncoding.BASE64)
 				{
-					File.saveBytes(destination, StringTools.base64Decode(asset.data));
+					File.saveBytes(destination, Base64.decode(asset.data));
 				}
 				else if (Std.is(asset.data, HaxeBytes))
 				{
@@ -83,7 +84,7 @@ class AssetHelper
 			{
 				if (asset.encoding == AssetEncoding.BASE64)
 				{
-					File.saveBytes(destination, StringTools.base64Decode(asset.data));
+					File.saveBytes(destination, Base64.decode(asset.data));
 				}
 				else if (Std.is(asset.data, HaxeBytes))
 				{
